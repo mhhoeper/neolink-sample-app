@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#192b29">
+  <title>Neolink Studio · Events & cameras</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/timeline.css">
+  <script defer src="/static/vendor/hls.min.js"></script>
+  <script defer src="/static/timeline.js"></script>
+  <script defer src="/static/playback.js"></script>
+  <script defer src="/static/app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Neolink Studio home">
+        <span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 24V8l18 16V8M7 16h18"/></svg></span>
+        <span>neolink<span class="brand-sub">STUDIO</span></span>
+      </a>
+      <div class="sidebar-section">WORKSPACE <span class="little-line"></span></div>
+      <div class="nav-active"><svg><use href="#grid"/></svg> Event overview <span id="camera-count">—</span></div>
+      <div class="sidebar-section camera-label">CAMERA VIEW</div>
+      <nav id="camera-nav" aria-label="Events by camera"><div class="nav-loading">Loading configuration …</div></nav>
+      <div class="sidebar-bottom">
+        <div class="connection-note"><span class="status-dot"></span><div>One shared overview<small>Timeline and video, together.</small></div></div>
+        <a class="source-link" href="https://github.com/mhhoeper/neolink-sample-app" target="_blank" rel="noopener">Source code <span>↗</span></a>
+        <div class="sidebar-version">NEOLINK STUDIO <span>02</span></div>
+      </div>
+    </aside>
+    <main>
+      <header class="page-header">
+        <div><div class="eyebrow">KEEP AN EYE ON HOME</div><h1>Events<span>.</span></h1>
+          <p>Every camera on one timeline. Every moment ready to watch.</p></div>
+        <div class="header-right"><span class="date-pill" id="today"></span><span id="demo" class="demo-badge" hidden>DEMO · SAMPLE DATA</span></div>
+      </header>
+      <div id="alert" class="alert" role="alert" hidden></div>
+      <section class="review-panel" aria-label="Camera view and shared timeline">
+        <div class="playback-layout">
+          <div class="viewer" id="viewer">
+            <div class="viewer-top"><span id="viewer-label"><span class="tiny-square"></span> RECORDINGS</span><span id="viewer-status">Choose a moment</span></div>
+            <video id="video" controls playsinline hidden aria-label="Video from the selected camera"></video>
+            <div id="video-empty" class="video-empty">
+              <div class="viewfinder"><svg><use href="#camera"/></svg><i></i></div>
+              <div class="viewer-eyebrow">EVERY EVENT, IN VIEW.</div>
+              <h3>Replay the moments.</h3>
+              <p>Choose a recording on the timeline or in the list.</p>
+              <button id="live-start" class="button button-light" disabled><svg><use href="#play"/></svg> Start live view</button>
+            </div>
+            <div id="video-loading" class="video-loading" hidden><span class="spinner"></span><h3 id="loading-title">Preparing recording</h3><p id="loading-text">Loading the video …</p><button id="cancel-video" class="button button-ghost">Cancel</button></div>
+            <div class="viewer-bottom"><span id="viewer-detail"><span class="status-dot"></span> Ready for your selection</span><span id="viewer-mode">RECORDINGS & LIVE</span></div>
+          </div>
+          <aside class="recording-panel" aria-label="Selected camera and recording">
+            <div class="recording-heading"><span class="small-label" id="playback-kind">CAMERA VIEW</span><span class="outline-pill"><span class="status-dot"></span><span id="camera-state">Ready</span></span></div>
+            <h2 id="camera-name">Loading cameras</h2>
+            <p class="recording-description" id="camera-subtitle">Video source</p>
+            <h3 id="playback-title">Choose a recording</h3>
+            <dl class="recording-facts">
+              <div><dt>Recording start</dt><dd id="recording-start">—</dd></div>
+              <div><dt>Recording end</dt><dd id="recording-end">—</dd></div>
+              <div><dt>Recording duration</dt><dd id="recording-duration">—</dd></div>
+            </dl>
+            <div class="playback-position" aria-live="off"><span>On screen</span><time id="playback-clock">—</time><small id="playback-progress">The timeline follows playback.</small></div>
+            <label class="live-camera-label" for="live-camera">Live view camera</label>
+            <select id="live-camera" aria-label="Live view camera"></select>
+            <div class="recording-actions">
+              <button id="live-switch" class="button button-stop" disabled><svg><use href="#play"/></svg> Live</button>
+              <button id="stop-video" class="button button-stop" disabled><svg><use href="#stop"/></svg> Stop</button>
+            </div>
+            <a id="download-recording" class="button button-stop recording-download" download hidden><svg><use href="#download"/></svg> Download recording</a>
+          </aside>
+        </div>
+        <section class="timeline-panel" aria-label="Shared timeline for all cameras">
+          <div class="timeline-header">
+            <div><div class="eyebrow">WHEN AND WHERE?</div><h2>Shared timeline <span id="event-count">—</span></h2></div>
+            <div class="events-controls">
+              <button id="range-now" class="button button-stop" title="Return to the last 24 hours">Now</button>
+              <label class="date-control"><svg><use href="#calendar"/></svg><input id="event-date" type="date" aria-label="Select archive date" title="Choose a date to view its archive"></label>
+              <select id="event-stream" aria-label="Recording stream"><option value="auto">Automatic</option><option value="subStream">Substream</option><option value="mainStream">Mainstream</option></select>
+              <button id="refresh" class="icon-button" title="Reload events" aria-label="Reload events" disabled><svg><use href="#refresh-icon"/></svg></button>
+            </div>
+          </div>
+          <div class="timeline-toolbar">
+            <div class="filter-tabs" role="group" aria-label="Filter events"><button data-filter="all" class="selected">All</button><button data-filter="people">People</button><button data-filter="vehicle">Vehicles</button><button data-filter="motion">Motion</button></div>
+            <div class="time-nav">
+              <button id="time-back" class="icon-button" aria-label="Earlier time window"><svg class="arrow-back"><use href="#arrow"/></svg></button>
+              <span id="time-window">00:00–24:00</span>
+              <button id="time-forward" class="icon-button" aria-label="Later time window"><svg><use href="#arrow"/></svg></button>
+              <select id="time-zoom" aria-label="Timeline range"><option value="86400">24 hours</option><option value="21600">6 hours</option><option value="3600">1 hour</option><option value="600">10 minutes</option></select>
+            </div>
+          </div>
+          <p id="range-info" class="range-info" role="status"></p>
+          <div id="event-notice" class="event-notice" role="status" hidden></div>
+          <div class="timeline-axis" id="timeline-axis" aria-hidden="true"></div>
+          <div class="timeline-tracks" id="timeline-tracks" aria-label="Recording intervals by camera"></div>
+          <div id="timeline-choices" class="timeline-choices" hidden></div>
+          <div class="timeline-footer"><div class="timeline-legend"><span><i class="person-key"></i> Person detected</span><span><i class="other-key"></i> Other recording</span><span><b>2</b> Multiple recordings</span></div><span id="cache-info"></span></div>
+          <p class="timeline-explanation">Click to choose a recording. Click its zoomed-in bar to seek to a specific moment.</p>
+        </section>
+      </section>
+      <section class="combined-events" aria-label="Shared event list">
+        <div class="combined-heading"><div><div class="eyebrow">A CLOSER LOOK</div><h2>Recordings in this time window</h2></div><span id="list-count">—</span></div>
+        <div class="event-list" id="event-list" aria-live="polite"><div class="list-message"><svg><use href="#archive"/></svg><h3>Loading events</h3><p>Querying the cameras …</p></div></div>
+        <button id="show-more" class="button button-stop" hidden>Show more recordings</button>
+      </section>
+      <footer class="page-footer"><span>Bars show recording intervals. The playback marker follows the video.</span><span>STUDIO <span class="footer-star">✳</span></span></footer>
+    </main>
+  </div>
+  <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="camera" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3"/><path d="m8 6 1-3h6l1 3"/></symbol>
+    <symbol id="grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></symbol>
+    <symbol id="stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+    <symbol id="download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+    <symbol id="refresh-icon" viewBox="0 0 24 24"><path d="M20 10a8 8 0 0 0-14-4L3 9m0-6v6h6M4 14a8 8 0 0 0 14 4l3-3m0 6v-6h-6"/></symbol>
+    <symbol id="calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4"/></symbol>
+    <symbol id="person" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol>
+    <symbol id="vehicle" viewBox="0 0 24 24"><path d="m5 10 2-6h10l2 6M3 10h18v9H3Zm2 9v2m14-2v2M6 14h2m8 0h2"/></symbol>
+    <symbol id="motion" viewBox="0 0 24 24"><path d="M3 8h6m-6 4h4m-4 4h6m6-10 4 4-4 4m-2-2-3 7m5-5 3 5"/><circle cx="17" cy="3" r="1"/></symbol>
+    <symbol id="archive" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="5" rx="1"/><path d="M5 8v13h14V8m-10 4h6"/></symbol>
+    <symbol id="bolt" viewBox="0 0 24 24"><path d="m14 2-9 12h7l-2 8 9-12h-7Z"/></symbol>
+    <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  </svg>
+</body>
+</html>

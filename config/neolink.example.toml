@@ -1,0 +1,11 @@
+# Replace with your existing, working Neolink configuration.
+# Do not commit camera credentials. Each camera appears in the web application.
+[[cameras]]
+name = "Driveway"
+uid = "REPLACE_WITH_CAMERA_UID"
+username = "admin"
+password = "REPLACE_WITH_CAMERA_PASSWORD"
+discovery = "local"
+stream = "both"
+
+# Add further [[cameras]] entries as needed.

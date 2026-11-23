@@ -1,0 +1,17 @@
+# Standalone demo, also suitable for Docker Desktop (linux/amd64).
+services:
+  studio:
+    image: ${APP_IMAGE:-ghcr.io/mhhoeper/neolink-sample-app:latest}
+    ports:
+      - "8080:8080"
+    environment:
+      DEMO_MODE: "true"
+      APP_DATA: /data
+      WEB_USERNAME: ${WEB_USERNAME:-}
+      WEB_PASSWORD: ${WEB_PASSWORD:-}
+    volumes:
+      - demo-data:/data
+    stop_grace_period: 20s
+
+volumes:
+  demo-data:

@@ -1,0 +1,25 @@
+services:
+  studio:
+    image: ${APP_IMAGE:-ghcr.io/mhhoeper/neolink-sample-app:latest}
+    container_name: neolink-studio
+    # Local camera discovery needs LAN access on the Linux Docker host.
+    network_mode: host
+    restart: unless-stopped
+    stop_grace_period: 20s
+    env_file: .env
+    environment:
+      NEOLINK_CONFIG: /config/neolink.toml
+      APP_DATA: /data
+    volumes:
+      - type: bind
+        source: ./config/neolink.toml
+        target: /config/neolink.toml
+        read_only: true
+        bind:
+          create_host_path: false
+      - studio-data:/data
+
+volumes:
+  studio-data:
+    # Also used by scripts/start.sh; existing caches survive the migration.
+    name: neolink-studio-data
